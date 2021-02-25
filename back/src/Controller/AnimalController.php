@@ -2,16 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Animal;
+use App\Model\AnimalTrait;
+use App\Utilities\CommonUtilities;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Utilities\CommonUtilities;
 
 class AnimalController extends AbstractController
 {
     use CommonUtilities;
+    use AnimalTrait;
 
     /**
      * @Route("/api/animal/{$id}", name="get_one_animal")
@@ -30,13 +31,7 @@ class AnimalController extends AbstractController
     public function create(Request $request): ?Response
     {
         try {
-            $request_data = json_decode($request->getContent());
-            $animal = new Animal();
-            $animal->setName($request_data->name);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($animal);
-            $entityManager->flush();
+            $animal = $this->createAnimal($request);
             $response = new Response('{"result":"success","type":"create","data": {"id":"' . $animal->getId() . '"}}');
         } catch (\Exception $e) {
             $response = new Response('{"result":"error","type":"exception","data": {"message":"' . $this->stripSpecial($e->getMessage()) . '"}}');
