@@ -32,9 +32,9 @@ class AnimalController extends AbstractController
     {
         try {
             $animal = $this->createAnimal($request);
-            $response = new Response('{"result":"success","type":"create","data": {"id":"' . $animal->getId() . '"}}');
+            $response = new Response($this->createResponse('success', 'create', $animal->getId()));
         } catch (\Exception $e) {
-            $response = new Response('{"result":"error","type":"exception","data": {"message":"' . $this->stripSpecial($e->getMessage()) . '"}}');
+            $response = new Response($this->createResponse('error', 'exception', $this->stripSpecial($e->getMessage())));
         }
         return $response;
     }
