@@ -7,9 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Utilities\CommonUtilities;
 
 class AnimalController extends AbstractController
 {
+    use CommonUtilities;
+
     /**
      * @Route("/api/animal/{$id}", name="get_one_animal")
      */
@@ -36,7 +39,7 @@ class AnimalController extends AbstractController
             $entityManager->flush();
             $response = new Response('{"result":"success","type":"create","data": {"id":"' . $animal->getId() . '"}}');
         } catch (\Exception $e) {
-            $response = new Response('{"result":"error","type":"exception","data": {"message":"' . str_replace(['"', '\'', "\n", "\r", '[', ']'], '', $e->getMessage()) . '"}}');
+            $response = new Response('{"result":"error","type":"exception","data": {"message":"' . $this->stripSpecial($e->getMessage()) . '"}}');
         }
         return $response;
     }
