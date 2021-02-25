@@ -26,14 +26,18 @@ class AnimalController extends AbstractController
      */
     public function create(Request $request): ?Response
     {
-        $request_data = json_decode($request->getContent());
-        $animal = new Animal();
-        $animal->setName($request_data->name);
+        try {
+            $request_data = json_decode($request->getContent());
+            $animal = new Animal();
+            $animal->setName($request_data->name);
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($animal);
-        $entityManager->flush();
-
-        return new Response('{"result":"success","type":"create","data": {"id":"' . $animal->getId() . '"}}');
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($animal);
+            $entityManager->flush();
+            $response = new Response('{"result":"success","type":"create","data": {"id":"' . $animal->getId() . '"}}');
+        } catch (\Exception $e) {
+            $response = new Response('{"result":"error","type":"exception","data": {"message":"' . str_replace(['"', '\'', "\n", "\r", '[', ']'], '', $e->getMessage()) . '"}}');
+        }
+        return $response;
     }
 }
