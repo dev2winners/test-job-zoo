@@ -6,7 +6,7 @@ trait CommonUtilities
 {
     public function stripSpecial(string $string): ?string
     {
-        return str_replace(['"', '\'', "\n", "\r", '[', ']'], '', $string);
+        return str_replace(['"', '\'', "\n", "\r", '[', ']','{','}'], '', $string);
     }
 
     public function createResponse(string $result, string $type, string $message): ?string
