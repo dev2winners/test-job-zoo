@@ -3,7 +3,6 @@
 namespace App\Model;
 
 use App\Entity\Animal;
-use App\Repository\AnimalRepository;
 
 trait AnimalTrait
 {
@@ -50,5 +49,22 @@ trait AnimalTrait
             ];
         }
         return json_encode($result, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function deleteAnimal(int $id): ?string
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $animal = $entityManager->getRepository(Animal::class)->find($id);
+
+        if (!$animal) {
+            throw $this->createNotFoundException(
+                'No animal found for id ' . $id
+            );
+        }
+
+        $entityManager->remove($animal);
+        $entityManager->flush();
+
+        return $id . ' deleted';
     }
 }
