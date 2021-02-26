@@ -67,4 +67,26 @@ trait AnimalTrait
 
         return $id . ' deleted';
     }
+
+    public function updateAnimal($request, int $id): ?string
+    {
+        $data = $request->getContent();
+        $data = json_decode($data);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $animal = $entityManager->getRepository(Animal::class)->find($id);
+
+        if (!$animal) {
+            throw $this->createNotFoundException(
+                'No animal found for id ' . $id
+            );
+        }
+
+        $animal->setName($data->name);
+
+        $entityManager->persist($animal);
+        $entityManager->flush();
+
+        return $id . ' updated';
+    }
 }

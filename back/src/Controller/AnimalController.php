@@ -44,6 +44,20 @@ class AnimalController extends AbstractController
     }
 
     /**
+     * @Route("/api/animal/update/{id}", name="update_animal")
+     */
+    public function update(Request $request, int $id): ?Response
+    {
+        try {
+            $message = $this->updateAnimal($request, $id);
+            $response = new Response($this->createResponse('success', 'get_one', $message));
+        } catch (\Exception $e) {
+            $response = new Response($this->createResponse('error', 'exception', $this->stripSpecial($e->getMessage())));
+        }
+        return $response;
+    }
+
+    /**
      * @Route("/api/animal/create", name="create_animal")
      */
     public function create(Request $request): ?Response
@@ -64,7 +78,7 @@ class AnimalController extends AbstractController
     {
         try {
             $message = $this->deleteAnimal($id);
-            $response = new Response($this->createResponse('success', 'get_one', $message));
+            $response = new Response($this->createResponse('success', 'delete', $message));
         } catch (\Exception $e) {
             $response = new Response($this->createResponse('error', 'exception', $this->stripSpecial($e->getMessage())));
         }
